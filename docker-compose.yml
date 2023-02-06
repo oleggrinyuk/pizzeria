@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  mongodb:
+    image: "mongo:4.4.5-bionic"
+    container_name: mongodb
+    volumes:
+      - "data/db"
+    ports:
+      - "27017:27017"
+    networks:
+      - pizzeria-net
+
+  server:
+    container_name: pizzeria-app
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - pizzeria-net
+
+
+networks:
+  pizzeria-net:
+    driver: bridge
+    ipam:
+      driver: default
